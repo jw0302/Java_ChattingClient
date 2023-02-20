@@ -8,6 +8,7 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -67,6 +68,7 @@ public class LoginPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				ChattingClient cci = ChattingClient.getinstance();
+				String username;
 				
 				try {
 					cci.setSocket(new Socket("127.0.0.1", 9090));
@@ -90,11 +92,14 @@ public class LoginPanel extends JPanel {
 					e1.printStackTrace();
 				}
 				
-				cci.getMainCard().show(cci.getMainPanel(), "userListPanel");
+				username = lpUserNameInput.getText();
+				cci.getUserListModel().addElement(username);
+				cci.getMainCard().show(cci.getMainPanel(), "chatListPanel");
 			}
 		};
 		
 		return mouseAdapter;
 		
 	}
+	
 }
