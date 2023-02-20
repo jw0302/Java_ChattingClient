@@ -47,6 +47,7 @@ public class LoginPanel extends JPanel {
 		lpImageIcon.setIcon(new ImageIcon(ChattingClient.class.getResource("/Images/kakaotalk_sharing_btn_medium_ov.png")));
 		lpImageIcon.setBounds(183, 226, 68, 69);
 		add(lpImageIcon);
+		
 	}
 	
 	public static LoginPanel getInstance() {

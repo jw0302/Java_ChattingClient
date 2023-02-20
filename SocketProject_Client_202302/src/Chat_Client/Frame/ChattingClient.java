@@ -3,6 +3,8 @@ package Chat_Client.Frame;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.InputStream;
@@ -59,7 +61,8 @@ public class ChattingClient extends JFrame {
 	private JButton rpInputSubmit;
 	private JButton rpChatOutBtn;
 	private JButton cpCreateBtn;
-
+	
+	@Getter
 	private JList<String> cpChatList;
 	private DefaultListModel<String> userListModel;
 
@@ -97,14 +100,17 @@ public class ChattingClient extends JFrame {
 		mainPanel.setLayout(mainCard);
 		
 		
-//		 로그인 패널 
+		
+//		==================== << LoginPanel >> ==========================
+		
 		loginPanel = LoginPanel.getInstance();
 		mainPanel.add(loginPanel, "loginPanel");
 		
 		
 		
 		
-//		====================================================================================================================
+//		==================== << ChatListPanel >> ==========================
+		
 		chatListPanel = new JPanel();
 		chatListPanel.setBackground(new Color(255, 204, 0));
 		mainPanel.add(chatListPanel, "userListPanel");
@@ -123,11 +129,11 @@ public class ChattingClient extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
-				if (e.getClickCount() == 2) {
-	                // 더블 클릭시 ActionListener 호출
+//				if (e.getClickCount() == 2) {
+//	                // 더블 클릭시 ActionListener 호출
 //	                ActionListener listener = new UsernameClickListener();
 //	                listener.actionPerformed(new ActionEvent(userList, ActionEvent.ACTION_PERFORMED, ""));
-	            }
+//	            }
 				
 				mainCard.show(mainPanel, "messagePanel");
 			}
@@ -156,6 +162,7 @@ public class ChattingClient extends JFrame {
 				
 			}
 		});
+		
 		cpCreateBtn.setIcon(new ImageIcon(ChattingClient.class.getResource("/Images/plus-round_icon-icons.com_50065.png")));
 		cpCreateBtn.setBounds(30, 148, 79, 54);
 		cpCreateBtn.setBackground(Color.white);
@@ -163,16 +170,16 @@ public class ChattingClient extends JFrame {
 		cpCreateBtn.setBorderPainted(false);
 		chatListPanel.add(cpCreateBtn);
 		
+		
+		
+//		==================== << ChatRoomPanel >> ==========================		
+		
+			
 		chatRoomPanel = new JPanel();
 		chatRoomPanel.setBackground(new Color(255, 204, 0));
 		mainPanel.add(chatRoomPanel, "messagePanel");
 		chatRoomPanel.setLayout(null);
 		
-		
-		
-		
-		
-//		====================================================================================================================
 		
 		JScrollPane rpContentsScroll = new JScrollPane();
 		rpContentsScroll.setBounds(0, 103, 464, 562);
@@ -215,11 +222,14 @@ public class ChattingClient extends JFrame {
 		
 		rpInputSubmit = new JButton("");
 		rpInputSubmit.addMouseListener(new MouseAdapter() {
+			
+			
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
 				String message = rpInput.getText();
 			    rpContentsView.append(username + ": " + message + "\n");
+			    
 			    rpInput.setText("");
 				
 			}
