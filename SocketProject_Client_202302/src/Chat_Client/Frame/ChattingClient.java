@@ -3,6 +3,7 @@ package Chat_Client.Frame;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -26,8 +27,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import com.google.gson.Gson;
-
-import lombok.Getter;
 
 
 //@Getter
@@ -86,6 +85,7 @@ public class ChattingClient extends JFrame {
 	}
 
 	
+	
 	public ChattingClient() {
 		
 		gson = new Gson();
@@ -105,12 +105,14 @@ public class ChattingClient extends JFrame {
 		
 //		==================== << LoginPanel >> ==========================
 		
+		
 		loginPanel = new JPanel();
 		loginPanel.setBackground(new Color(255, 204, 0));
 		mainPanel.add(loginPanel, "loginPanel");
 		loginPanel.setLayout(null);
 		
 		lpUserNameInput = new JTextField();
+		lpUserNameInput.setFont(new Font("굴림", Font.PLAIN, 16));
 		lpUserNameInput.setHorizontalAlignment(SwingConstants.CENTER);
 		lpUserNameInput.setBounds(73, 492, 300, 45);
 		loginPanel.add(lpUserNameInput);
@@ -146,7 +148,7 @@ public class ChattingClient extends JFrame {
 				}
 				
 				username = lpUserNameInput.getText();
-				userListModel.addElement(username);
+				userListModel.addElement("제목: " + username);
 				mainCard.show(mainPanel, "chatListPanel");
 			}
 		});
@@ -167,16 +169,19 @@ public class ChattingClient extends JFrame {
 		
 //		==================== << ChatListPanel >> ==========================
 		
+		
 		chatListPanel = new JPanel();
 		chatListPanel.setBackground(new Color(255, 204, 0));
 		mainPanel.add(chatListPanel, "chatListPanel");
-		chatListPanel.setLayout(null);		
+		chatListPanel.setLayout(null);	
+		
 		JScrollPane cpChatListScroll = new JScrollPane();
 		cpChatListScroll.setBounds(133, 0, 331, 761);
 		chatListPanel.add(cpChatListScroll);
 		
 		userListModel = new DefaultListModel<>();
-		cpChatList = new JList<>(userListModel);
+		cpChatList = new JList<String>(userListModel);
+		cpChatList.setFont(new Font("궁서", Font.PLAIN, 18));
 		
 		cpChatList.addMouseListener(new MouseAdapter() {
 			
@@ -189,7 +194,7 @@ public class ChattingClient extends JFrame {
 		        String message = username + " 님이 방을 생성하였습니다";
 		        rpContentsView.setText(message);
 		        
-		        rpChatTitle.setText("제목 : " + username + " (님)의 방");
+		        rpChatTitle.setText(username + " (님)의 방");
 				
 				mainCard.show(mainPanel, "chatRoomPanel");
 			}
@@ -213,7 +218,7 @@ public class ChattingClient extends JFrame {
 						"방 생성",
 						JOptionPane.INFORMATION_MESSAGE);
 				
-				userListModel.addElement(username);
+				userListModel.addElement("제목: " + username);
 				username = cpCreateBtn.getText();
 				
 			}
@@ -236,12 +241,12 @@ public class ChattingClient extends JFrame {
 		mainPanel.add(chatRoomPanel, "chatRoomPanel");
 		chatRoomPanel.setLayout(null);
 		
-		
 		JScrollPane rpContentsScroll = new JScrollPane();
 		rpContentsScroll.setBounds(0, 103, 464, 562);
 		chatRoomPanel.add(rpContentsScroll);
 		
 		rpContentsView = new JTextArea();
+		rpContentsView.setFont(new Font("굴림", Font.PLAIN, 15));
 		rpContentsScroll.setViewportView(rpContentsView);
 		
 		JScrollPane rpInputScroll = new JScrollPane();
@@ -259,6 +264,7 @@ public class ChattingClient extends JFrame {
 				
 				mainCard.show(mainPanel, "chatListPanel");
 				rpContentsView.setText("");
+				rpInput.setText("");
 				
 			}
 		});
@@ -276,7 +282,8 @@ public class ChattingClient extends JFrame {
 		chatRoomPanel.add(rpImageIcon);
 		
 		rpChatTitle = new JLabel("");
-		rpChatTitle.setBounds(121, 29, 155, 46);
+		rpChatTitle.setFont(new Font("휴먼둥근헤드라인", Font.BOLD, 16));
+		rpChatTitle.setBounds(121, 29, 226, 46);
 		chatRoomPanel.add(rpChatTitle);
 		
 		rpInputSubmit = new JButton("");
@@ -289,10 +296,12 @@ public class ChattingClient extends JFrame {
 				String message = rpInput.getText();
 			    rpContentsView.append("\n" + username + ": " + message);
 			    
+			    
 			    rpInput.setText("");
 				
 			}
 		});
+		
 		rpInputSubmit.setIcon(new ImageIcon(ChattingClient.class.getResource("/Images/mail_send_icon_180871.png")));
 		rpInputSubmit.setBounds(379, 663, 85, 98);
 		chatRoomPanel.add(rpInputSubmit);
