@@ -3,13 +3,14 @@ package Chat_Client.Frame;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -22,14 +23,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import com.google.gson.Gson;
 
 import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+
+//@Getter
 public class ChattingClient extends JFrame {
 	
 	
@@ -42,7 +43,7 @@ public class ChattingClient extends JFrame {
 		return instance;
 	}
 	
-	@Getter @Setter
+
 	private Socket socket;
 	private Gson gson;
 	private InputStream inputStream;
@@ -50,22 +51,21 @@ public class ChattingClient extends JFrame {
 	
 	private String username;
 	
-	
-	@Getter
 	private CardLayout mainCard;
 	private JPanel mainPanel;
-	private JPanel loginPanel;
-	@Getter
-	private JPanel chatRoomPanel;
-	private JPanel chatListPanel;
-	private JButton rpInputSubmit;
-	private JButton rpChatOutBtn;
-	private JButton cpCreateBtn;
 	
-	@Getter @Setter
+	private JPanel loginPanel;
+	private JButton lpLoginBtn;
+	private JTextField lpUserNameInput;
+	
+	private JPanel chatListPanel;
+	private JButton cpCreateBtn;
 	private JList<String> cpChatList;
 	private DefaultListModel<String> userListModel;
-
+	
+	private JPanel chatRoomPanel;
+	private JButton rpInputSubmit;
+	private JButton rpChatOutBtn;
 	private JTextField rpInput;
 	private JTextArea rpContentsView;
 	private JLabel rpChatTitle;
@@ -105,72 +105,126 @@ public class ChattingClient extends JFrame {
 		
 //		==================== << LoginPanel >> ==========================
 		
-		loginPanel = LoginPanel.getInstance();
+		loginPanel = new JPanel();
+		loginPanel.setBackground(new Color(255, 204, 0));
 		mainPanel.add(loginPanel, "loginPanel");
+		loginPanel.setLayout(null);
 		
+		lpUserNameInput = new JTextField();
+		lpUserNameInput.setHorizontalAlignment(SwingConstants.CENTER);
+		lpUserNameInput.setBounds(73, 492, 300, 45);
+		loginPanel.add(lpUserNameInput);
+		lpUserNameInput.setColumns(10);
+		
+		lpLoginBtn = new JButton("");
+		lpLoginBtn.addMouseListener(new MouseAdapter() {
+		
+		
+			@Override
+			public void mouseClicked(MouseEvent e) {
+								
+				try {
+					socket = new Socket("127.0.0.1", 9090);
+					
+					
+					JOptionPane.showMessageDialog(null,
+							socket.getInetAddress() + "서버 접속",
+							"접속성공!",
+							JOptionPane.INFORMATION_MESSAGE);
+									
+				} catch (ConnectException e1) {
+					
+					JOptionPane.showMessageDialog(null,
+							"서버 접속 실패",
+							"접속실패!",
+							JOptionPane.ERROR_MESSAGE);
+					
+				} catch (UnknownHostException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				username = lpUserNameInput.getText();
+				userListModel.addElement(username);
+				mainCard.show(mainPanel, "chatListPanel");
+			}
+		});
+		
+		lpLoginBtn.setIcon(new ImageIcon(ChattingClient.class.getResource("/Images/login_med.png")));
+		lpLoginBtn.setBounds(73, 573, 300, 45);
+		lpLoginBtn.setBackground(Color.white);
+		lpLoginBtn.setOpaque(false);//투명하게
+		lpLoginBtn.setBorderPainted(false);
+		loginPanel.add(lpLoginBtn);
+		
+		JLabel lpImageIcon = new JLabel("");
+		lpImageIcon.setIcon(new ImageIcon(ChattingClient.class.getResource("/Images/kakaotalk_sharing_btn_medium_ov.png")));
+		lpImageIcon.setBounds(183, 226, 68, 69);
+		loginPanel.add(lpImageIcon);
 		
 		
 		
 //		==================== << ChatListPanel >> ==========================
 		
-		chatListPanel = ChatListPanel.getInstance();
-//		chatListPanel.setBackground(new Color(255, 204, 0));
+		chatListPanel = new JPanel();
+		chatListPanel.setBackground(new Color(255, 204, 0));
 		mainPanel.add(chatListPanel, "chatListPanel");
-//		chatListPanel.setLayout(null);		
-//		JScrollPane cpChatListScroll = new JScrollPane();
-//		cpChatListScroll.setBounds(133, 0, 331, 761);
-//		chatListPanel.add(cpChatListScroll);
+		chatListPanel.setLayout(null);		
+		JScrollPane cpChatListScroll = new JScrollPane();
+		cpChatListScroll.setBounds(133, 0, 331, 761);
+		chatListPanel.add(cpChatListScroll);
 		
-//		userListModel = new DefaultListModel<>();
-//		cpChatList = new JList<>(userListModel);
+		userListModel = new DefaultListModel<>();
+		cpChatList = new JList<>(userListModel);
 		
-//		cpChatList.addMouseListener(new MouseAdapter() {
+		cpChatList.addMouseListener(new MouseAdapter() {
 			
 			
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				
-//
-//				username = cpChatList.getSelectedValue().toString();
-//		        String message = username + " 님이 방을 생성하였습니다";
-//		        rpContentsView.setText(message);
-//		        
-//		        rpChatTitle.setText("제목 : " + username + " (님)의 방");
-//				
-//				mainCard.show(mainPanel, "chatRoomPanel");
-//			}
-//			
-//		});
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+
+				username = cpChatList.getSelectedValue().toString();
+		        String message = username + " 님이 방을 생성하였습니다";
+		        rpContentsView.setText(message);
+		        
+		        rpChatTitle.setText("제목 : " + username + " (님)의 방");
+				
+				mainCard.show(mainPanel, "chatRoomPanel");
+			}
+			
+		});
 		
-//		cpChatListScroll.setViewportView(cpChatList);
+		cpChatListScroll.setViewportView(cpChatList);
 		
-//		JLabel cpImageIcon = new JLabel("");
-//		cpImageIcon.setIcon(new ImageIcon(ChattingClient.class.getResource("/Images/kakaotalk_sharing_btn_medium_ov.png")));
-//		cpImageIcon.setBounds(30, 53, 68, 69);
-//		chatListPanel.add(cpImageIcon);
-//		
-//		cpCreateBtn = new JButton("");
-//		cpCreateBtn.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				
-//				username = JOptionPane.showInputDialog(null,
-//						"방의 제목을 입력해주시오.",
-//						"방 생성",
-//						JOptionPane.INFORMATION_MESSAGE);
-//				
-//				userListModel.addElement(username);
-//				username = cpCreateBtn.getText();
-//				
-//			}
-//		});
-//		
-//		cpCreateBtn.setIcon(new ImageIcon(ChattingClient.class.getResource("/Images/plus-round_icon-icons.com_50065.png")));
-//		cpCreateBtn.setBounds(30, 148, 79, 54);
-//		cpCreateBtn.setBackground(Color.white);
-//		cpCreateBtn.setOpaque(false);//투명하게
-//		cpCreateBtn.setBorderPainted(false);
-//		chatListPanel.add(cpCreateBtn);
+		JLabel cpImageIcon = new JLabel("");
+		cpImageIcon.setIcon(new ImageIcon(ChattingClient.class.getResource("/Images/kakaotalk_sharing_btn_medium_ov.png")));
+		cpImageIcon.setBounds(30, 53, 68, 69);
+		chatListPanel.add(cpImageIcon);
+		
+		cpCreateBtn = new JButton("");
+		cpCreateBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				username = JOptionPane.showInputDialog(null,
+						"방의 제목을 입력해주시오.",
+						"방 생성",
+						JOptionPane.INFORMATION_MESSAGE);
+				
+				userListModel.addElement(username);
+				username = cpCreateBtn.getText();
+				
+			}
+		});
+		
+		cpCreateBtn.setIcon(new ImageIcon(ChattingClient.class.getResource("/Images/plus-round_icon-icons.com_50065.png")));
+		cpCreateBtn.setBounds(30, 148, 79, 54);
+		cpCreateBtn.setBackground(Color.white);
+		cpCreateBtn.setOpaque(false);//투명하게
+		cpCreateBtn.setBorderPainted(false);
+		chatListPanel.add(cpCreateBtn);
 		
 		
 		
