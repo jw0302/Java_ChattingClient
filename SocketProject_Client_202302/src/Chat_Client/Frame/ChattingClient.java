@@ -28,8 +28,10 @@ import javax.swing.SwingConstants;
 
 import com.google.gson.Gson;
 
+import lombok.Getter;
 
-//@Getter
+
+@Getter
 public class ChattingClient extends JFrame {
 	
 	
